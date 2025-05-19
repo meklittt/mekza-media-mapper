@@ -4,7 +4,7 @@ import { ModeToggle } from "@/components/theme/mode-toggle";
 
 export default function Navbar() {
   return (
-    <header className="w-full bg-background border-b border-border shadow-sm">
+    <header className="w-full bg-background border-b border-border shadow-sm z-20 sticky top-0">
       <div className="container flex items-center justify-between h-16 px-4 mx-auto">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2">
