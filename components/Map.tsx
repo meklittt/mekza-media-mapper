@@ -1,44 +1,40 @@
 "use client";
-
+import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import mapboxgl, { LngLatBoundsLike, LngLatLike } from "mapbox-gl";
+import mapboxgl, { GeoJSONSource, LngLatLike } from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { MediaPoint, mockMediaPoints } from "@/lib/data/mock-media";
-import { useRouter } from "next/navigation";
+import { MediaPoint } from "@/lib/data/mock-media";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
 
 const DEFAULT_CENTER = [-98.5795, 39.8283] as LngLatLike;
 const DEFAULT_ZOOM = 5;
 
-export default function Map({
-  selectedMediaPoint,
-}: {
-  selectedMediaPoint: MediaPoint | null;
-}) {
-  const router = useRouter();
+export default function Map({ data }: { data: MediaPoint[] }) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
 
-  // Initialize the map
+  // Grab the idea of the selected media point from the URL
+  const searchParams = useSearchParams();
+  const mediaPointId = searchParams.get("mediaPointId");
+
+  // Find the selected media point in the data
+  const selectedMediaPoint = mediaPointId
+    ? data.find((point) => point.id === mediaPointId)
+    : null;
+
+  /** =============================================== */
+  /** Initialize the map */
+  /** =============================================== */
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
-
-    const center = selectedMediaPoint
-      ? ([
-          selectedMediaPoint.longitude,
-          selectedMediaPoint.latitude,
-        ] as LngLatLike)
-      : DEFAULT_CENTER;
-
-    const zoom = selectedMediaPoint ? 13 : DEFAULT_ZOOM;
 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/mapbox/standard",
-      center,
-      zoom,
+      center: DEFAULT_CENTER,
+      zoom: DEFAULT_ZOOM,
     });
 
     // Add navigation controls (zoom in/out and rotation)
@@ -58,52 +54,53 @@ export default function Map({
     };
   }, []);
 
-  // Add data points to the map
+  /** =============================================== */
+  /** Add spatial data to the map */
+  /** =============================================== */
   useEffect(() => {
     if (!map.current || !isMapLoaded) return;
 
-    // Create a GeoJSON feature collection from our mock data
     const geojson = {
       type: "FeatureCollection",
-      features: mockMediaPoints.map((point) => ({
+      features: data.map((point) => ({
         type: "Feature",
         geometry: {
           type: "Point",
           coordinates: [point.longitude, point.latitude],
         },
         properties: {
-          id: point.id,
-          title: point.title,
-          description: point.description,
-          mediaType: point.media_type,
+          ...point,
         },
       })),
     };
 
-    // Add the source
-    map.current.addSource("media-points", {
-      type: "geojson",
-      data: geojson as GeoJSON.FeatureCollection,
-    });
+    const existingSource = map.current.getSource("media-points");
 
-    // Add a circle layer for the points
-    map.current.addLayer({
-      id: "media-points-layer",
-      type: "circle",
-      source: "media-points",
-      paint: {
-        "circle-radius": 8,
-        "circle-color": "#4264fb",
-        "circle-stroke-width": 2,
-        "circle-stroke-color": "#ffffff",
-      },
-    });
-
-    // Fit to bounds if no media point is selected
-    if (!selectedMediaPoint) {
-      map.current.fitBounds(
-        geojson.features.map((f) => f.geometry.coordinates) as LngLatBoundsLike
+    if (existingSource) {
+      (existingSource as GeoJSONSource).setData(
+        geojson as GeoJSON.FeatureCollection
       );
+    } else {
+      map.current.addSource("media-points", {
+        type: "geojson",
+        data: geojson as GeoJSON.FeatureCollection,
+      });
+    }
+
+    const existingLayer = map.current.getLayer("media-points-layer");
+
+    if (!existingLayer) {
+      map.current.addLayer({
+        id: "media-points-layer",
+        type: "circle",
+        source: "media-points",
+        paint: {
+          "circle-radius": 8,
+          "circle-color": "#4264fb",
+          "circle-stroke-width": 2,
+          "circle-stroke-color": "#ffffff",
+        },
+      });
     }
 
     // Add click interaction
@@ -115,7 +112,8 @@ export default function Map({
       // const coordinates = props?.coordinates;
 
       if (props && props.id) {
-        router.push(`?mediaPointId=${props.id}`);
+        window.history.pushState({}, "", `?mediaPointId=${props.id}`);
+        // router.push(`?mediaPointId=${props.id}`);
       }
     });
 
@@ -143,7 +141,18 @@ export default function Map({
         }
       }
     };
-  }, [isMapLoaded, selectedMediaPoint, router]);
+  }, [isMapLoaded, data]);
+
+  /** =============================================== */
+  /** Pan the map to the selected media point */
+  /** =============================================== */
+  useEffect(() => {
+    if (!map.current || !isMapLoaded || !selectedMediaPoint) return;
+
+    map.current.flyTo({
+      center: [selectedMediaPoint.longitude, selectedMediaPoint.latitude],
+    });
+  }, [selectedMediaPoint, isMapLoaded]);
 
   return (
     <div className="w-full h-full relative">

@@ -21,14 +21,6 @@ export default function Navbar() {
         <nav>
           <ul className="flex items-center gap-6">
             <li>
-              <Link
-                href="/about"
-                className="text-foreground/80 hover:text-foreground transition-colors"
-              >
-                About
-              </Link>
-            </li>
-            <li>
               <ModeToggle />
             </li>
           </ul>
