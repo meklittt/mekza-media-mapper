@@ -1,7 +1,11 @@
 "use client";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import mapboxgl, { GeoJSONSource, LngLatLike } from "mapbox-gl";
+import mapboxgl, {
+  GeoJSONSource,
+  LngLatBoundsLike,
+  LngLatLike,
+} from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MediaPoint } from "@/lib/data/mock-media";
 
@@ -101,6 +105,10 @@ export default function Map({ data }: { data: MediaPoint[] }) {
           "circle-stroke-color": "#ffffff",
         },
       });
+
+      map.current.fitBounds(
+        geojson.features.map((f) => f.geometry.coordinates) as LngLatBoundsLike
+      );
     }
 
     // Add click interaction
