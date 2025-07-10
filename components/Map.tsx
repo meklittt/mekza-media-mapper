@@ -7,7 +7,7 @@ import mapboxgl, {
   LngLatLike,
 } from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { MediaLocation } from "@/lib/data/mock-media";
+import { MediaLocation } from "@/lib/airtable/types";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
 
