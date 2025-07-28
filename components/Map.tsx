@@ -124,11 +124,9 @@ export function Map({
 
       const feature = e.features[0];
       const props = feature.properties;
-      // const coordinates = props?.coordinates;
 
       if (props && props.id) {
         window.history.pushState({}, "", `?mediaPointId=${props.id}`);
-        // router.push(`?mediaPointId=${props.id}`);
       }
     });
 
@@ -165,25 +163,37 @@ export function Map({
    */
   /** =============================================== */
   useEffect(() => {
-    if (!map.current || !isMapLoaded || !selectedMediaPoint) return;
+    if (!map.current || !isMapLoaded) return;
 
-    map.current.flyTo({
-      center: [selectedMediaPoint.longitude, selectedMediaPoint.latitude],
-    });
+    if (selectedMediaPoint) {
+      map.current.flyTo({
+        center: [selectedMediaPoint.longitude, selectedMediaPoint.latitude],
+      });
 
-    map.current.setPaintProperty("media-points-layer", "circle-color", [
-      "case",
-      ["==", ["get", "id"], mediaPointId],
-      "#15cc09",
-      "#4264fb",
-    ]);
+      map.current.setPaintProperty("media-points-layer", "circle-color", [
+        "case",
+        ["==", ["get", "id"], mediaPointId],
+        "#15cc09",
+        "#4264fb",
+      ]);
 
-    map.current.setPaintProperty("media-points-layer", "circle-radius", [
-      "case",
-      ["==", ["get", "id"], mediaPointId],
-      12,
-      8,
-    ]);
+      map.current.setPaintProperty("media-points-layer", "circle-radius", [
+        "case",
+        ["==", ["get", "id"], mediaPointId],
+        12,
+        8,
+      ]);
+    } else {
+      map.current.setPaintProperty(
+        "media-points-layer",
+        "circle-color",
+        "#4264fb"
+      );
+
+      map.current.setPaintProperty("media-points-layer", "circle-radius", 8);
+    }
+
+    console.log("selectedMediaPoint", selectedMediaPoint);
   }, [selectedMediaPoint, isMapLoaded]);
 
   return (
