@@ -158,8 +158,9 @@ export function MediaTable({ data }: MediaTableProps) {
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
+      <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+        {/* Rows per page - Hidden on mobile, shown on desktop */}
+        <div className="hidden sm:flex items-center space-x-2">
           <p className="text-sm font-medium">Rows per page</p>
           <select
             value={table.getState().pagination.pageSize}
@@ -176,14 +177,18 @@ export function MediaTable({ data }: MediaTableProps) {
           </select>
         </div>
 
-        <div className="flex items-center space-x-6 lg:space-x-8">
-          <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+        {/* Page info - Centered on mobile, positioned on desktop */}
+        <div className="flex items-center justify-center sm:justify-start">
+          <div className="flex items-center justify-center text-sm font-medium">
             Page {table.getState().pagination.pageIndex + 1} of{" "}
             {table.getPageCount()}
           </div>
+        </div>
 
+        {/* Pagination controls - Optimized for mobile */}
+        <div className="flex items-center justify-center">
           <Pagination>
-            <PaginationContent>
+            <PaginationContent className="gap-1">
               <PaginationItem>
                 <PaginationPrevious
                   onClick={() => table.previousPage()}
@@ -196,6 +201,7 @@ export function MediaTable({ data }: MediaTableProps) {
                 />
               </PaginationItem>
 
+              {/* Desktop: Show page numbers */}
               {Array.from(
                 { length: Math.min(5, table.getPageCount()) },
                 (_, i) => {
@@ -214,11 +220,11 @@ export function MediaTable({ data }: MediaTableProps) {
                   }
 
                   return (
-                    <PaginationItem key={pageNumber}>
+                    <PaginationItem key={pageNumber} className="hidden sm:block">
                       <PaginationLink
                         onClick={() => table.setPageIndex(pageNumber - 1)}
                         isActive={pageNumber === currentPage + 1}
-                        className="cursor-pointer"
+                        className="cursor-pointer min-w-[40px] h-10"
                       >
                         {pageNumber}
                       </PaginationLink>
@@ -240,6 +246,24 @@ export function MediaTable({ data }: MediaTableProps) {
               </PaginationItem>
             </PaginationContent>
           </Pagination>
+        </div>
+
+        {/* Mobile-only rows per page selector */}
+        <div className="flex sm:hidden items-center justify-center space-x-2 pt-2 border-t">
+          <p className="text-sm font-medium">Rows per page:</p>
+          <select
+            value={table.getState().pagination.pageSize}
+            onChange={(e) => {
+              table.setPageSize(Number(e.target.value));
+            }}
+            className="h-10 w-[80px] rounded border border-input bg-background px-3 py-2 text-sm"
+          >
+            {[10, 20, 30, 40, 50].map((pageSize) => (
+              <option key={pageSize} value={pageSize}>
+                {pageSize}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
     </div>
