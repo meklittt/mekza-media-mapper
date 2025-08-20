@@ -4,11 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import { CircleX } from "lucide-react";
+import { CircleX, ExternalLink } from "lucide-react";
 import { MediaLocation } from "@/lib/airtable/types";
 import { Metric } from "@/components/metric";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 
 interface LocationDetailsProps {
   data: MediaLocation[];
@@ -114,6 +115,18 @@ export function LocationDetails({ data }: LocationDetailsProps) {
             >
               Created by {selectedMediaPoint?.media?.director}
             </p>
+            {selectedMediaPoint?.media?.video_link && (
+              <Button variant="outline" size="sm" asChild className="mt-2">
+                <Link
+                  href={selectedMediaPoint?.media?.video_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Watch Video
+                  <ExternalLink className="h-3 w-3" />
+                </Link>
+              </Button>
+            )}
           </div>
           <Button variant="ghost" size="icon" onClick={handleClose}>
             <CircleX className="size-6" />
@@ -161,13 +174,6 @@ export function LocationDetails({ data }: LocationDetailsProps) {
         <Metric
           label="Subjects"
           value={selectedMediaPoint?.media?.subjects}
-          className="mt-3"
-        />
-
-        <Metric
-          href={selectedMediaPoint?.media?.video_link || ""}
-          label="Video Link"
-          value={selectedMediaPoint?.media?.video_link || ""}
           className="mt-3"
         />
 

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ColumnDef } from "@tanstack/react-table";
 import { MediaLocation } from "@/lib/airtable/types";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ExternalLink } from "lucide-react";
 import { SortableHeader } from "../sortable-header";
 
 export const formatLocation = (item: MediaLocation) => {
@@ -17,9 +17,28 @@ export const columns: ColumnDef<MediaLocation>[] = [
     header: ({ column }) => (
       <SortableHeader column={column} title="Media Title" />
     ),
-    cell: ({ row }) => (
-      <div className="font-medium">{row.original.media?.name}</div>
-    ),
+    cell: ({ row }) => {
+      const mediaTitle = row.original.media?.name;
+      const videoLink = row.original.media?.video_link;
+
+      if (!videoLink) {
+        return <div className="font-medium">{mediaTitle}</div>;
+      }
+
+      return (
+        <div className="text-sm text-muted-foreground">
+          <Link
+            href={videoLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:text-primary/80 transition-colors underline underline-offset-2 flex items-center gap-2"
+          >
+            {mediaTitle}
+            <ExternalLink className="h-3 w-3" />
+          </Link>
+        </div>
+      );
+    },
     size: 200,
   },
   {
