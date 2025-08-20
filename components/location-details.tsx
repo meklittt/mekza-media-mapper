@@ -165,6 +165,13 @@ export function LocationDetails({ data }: LocationDetailsProps) {
         />
 
         <Metric
+          href={selectedMediaPoint?.media?.video_link || ""}
+          label="Video Link"
+          value={selectedMediaPoint?.media?.video_link || ""}
+          className="mt-3"
+        />
+
+        <Metric
           href={selectedMediaPoint?.media?.rights_statement_link || ""}
           label="Media Rights"
           value={selectedMediaPoint?.media?.rights || ""}
