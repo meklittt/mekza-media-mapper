@@ -460,6 +460,21 @@ If you forked the repository, here's how to keep it updated and manage your cust
 
 ### Keeping Your Fork Updated
 
+You can sync your fork with the original repository using either the GitHub UI or command line.
+
+#### Option A: GitHub UI (Easiest)
+
+1. **Navigate to your fork** on GitHub (https://github.com/YOUR_USERNAME/media-mapper)
+2. **Check for updates**: You'll see a message like "This branch is X commits behind original-repo:main" if updates are available
+3. **Sync fork**: Click the **"Sync fork"** button
+4. **Confirm**: Click **"Update branch"** to pull in the latest changes from the original repository
+5. **Pull locally** (if you're working on the project locally):
+   ```bash
+   git pull origin main
+   ```
+
+#### Option B: Command Line
+
 1. **Fetch upstream changes**
    ```bash
    git fetch upstream
