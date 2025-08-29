@@ -191,7 +191,11 @@ NEXT_PUBLIC_MAPBOX_TOKEN=pk.your_actual_token_here
 
 #### 2. Base Structure
 
-Your Airtable base should contain a table named **"Media Locations"** with the following fields:
+Your Airtable base should contain the following tables:
+
+##### Media Locations Table
+
+A table named **"Media Locations"** with the following fields:
 
 ##### Required Fields:
 
@@ -223,6 +227,40 @@ Your Airtable base should contain a table named **"Media Locations"** with the f
 - **Rights (from Media)** - Lookup field (Single line text)
 - **Rights Statement Link (from Media)** - Lookup field (URL)
 - **Media Type (from Media)** - Lookup field (Single select)
+
+##### Web App Metadata Table
+
+A table named **"Web App Metadata"** with the following fields to customize your site's metadata and branding:
+
+**Required Fields:**
+- **Site Title** (Single line text) - The title that appears in the browser tab and navigation
+- **Site Description** (Long text) - Meta description for SEO and site previews
+- **Site Keywords** (Multiple select or Single line text) - Keywords for SEO optimization
+- **Creator** (Single line text) - Attribution information for site creators
+- **Owner** (Single line text) - Organization or individual who owns/operates the site
+
+**Usage:**
+- The application reads the first record from this table to populate site metadata
+- This data is used for:
+  - Browser page titles and meta descriptions
+  - Navigation bar title
+  - Footer attribution
+  - Social media preview information
+  - Search engine optimization
+
+**Example Record:**
+```
+Site Title: "Water Stories Map"
+Site Description: "Explore how water is portrayed in media across different locations and time periods through our interactive mapping platform."
+Site Keywords: ["water", "media", "geography", "storytelling", "environmental"]
+Creator: "Dr. Jane Smith, University Research Team"
+Owner: "Environmental Media Research Lab"
+```
+
+**Important Notes:**
+- Only the first record in this table is used by the application
+- If this table is missing or empty, the application falls back to default metadata
+- Changes to this table require a new deployment to take effect in production
 
 #### 3. Views and Permissions
 
@@ -263,6 +301,14 @@ interface Media {
   references?: string;
   rights?: string;
   rights_statement_link?: string;
+}
+
+interface WebAppMetadata {
+  title?: string;
+  description?: string;
+  keywords?: string | string[];
+  creator?: string;
+  owner?: string;
 }
 ```
 
