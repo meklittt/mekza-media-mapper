@@ -21,12 +21,37 @@ Media Mapper is designed to be a flexible, open-source web application framework
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - npm, pnpm, or yarn
 - Airtable account with properly structured data
 - Mapbox account for map functionality
 
 ### Installation
+
+#### Option A: Fork the Repository (Recommended)
+
+Forking allows you to customize Media Mapper while maintaining the ability to receive upstream updates.
+
+1. **Fork the repository**
+   - Go to the [Media Mapper GitHub repository](https://github.com/your-org/media-mapper)
+   - Click the "Fork" button in the top-right corner
+   - Choose your GitHub account or organization as the destination
+
+2. **Clone your fork**
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/media-mapper.git
+   cd media-mapper
+   ```
+
+3. **Set up upstream remote** (to receive updates from the original repository)
+   ```bash
+   git remote add upstream https://github.com/your-org/media-mapper.git
+   git remote -v  # Verify you have both 'origin' and 'upstream' remotes
+   ```
+
+#### Option B: Direct Clone
+
+If you don't plan to contribute back or customize significantly, you can clone directly:
 
 1. **Clone the repository**
    ```bash
@@ -35,6 +60,7 @@ Media Mapper is designed to be a flexible, open-source web application framework
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    # or
@@ -42,13 +68,15 @@ Media Mapper is designed to be a flexible, open-source web application framework
    ```
 
 3. **Set up environment variables**
-   
+
    Copy the example environment file and configure your API keys:
+
    ```bash
    cp env.example .env.local
    ```
-   
+
    Edit `.env.local` with your actual values:
+
    ```env
    NEXT_PUBLIC_MAPBOX_TOKEN=your_mapbox_token_here
    AIRTABLE_API_KEY=your_airtable_api_key
@@ -58,6 +86,7 @@ Media Mapper is designed to be a flexible, open-source web application framework
    ```
 
 4. **Run the development server**
+
    ```bash
    npm run dev
    # or
@@ -65,7 +94,7 @@ Media Mapper is designed to be a flexible, open-source web application framework
    ```
 
 5. **Open your browser**
-   
+
    Navigate to [http://localhost:3000](http://localhost:3000) to see your Media Mapper instance.
 
 ## 📋 Available Scripts
@@ -114,23 +143,64 @@ media-mapper/
 
 Media Mapper uses Airtable as its primary data source. Your Airtable base must follow a specific schema for the application to work correctly.
 
+### Mapbox Account Setup
+
+#### 1. Create a Mapbox Account
+
+- Sign up for a free account at [mapbox.com](https://mapbox.com)
+- Mapbox provides generous free usage limits (up to 50,000 map loads per month)
+
+#### 2. Get Your Access Token
+
+1. After signing up, navigate to your [Mapbox Account Dashboard](https://console.mapbox.com/account/access-tokens/)
+2. Go to the **Access tokens** section
+3. Copy your **Default public token** (starts with `pk.`)
+4. Alternatively, create a new public token:
+   - Click **Create a token**
+   - Give it a descriptive name (e.g., "Media Mapper Production")
+   - Select the **Public scopes** (the defaults are sufficient)
+   - Click **Create token**
+
+#### 3. Configure Token Restrictions (Optional but Recommended)
+
+For production deployments, restrict your token usage:
+
+1. Click on your token in the dashboard
+2. Add **URL restrictions** to limit usage to your domains
+3. Example restrictions:
+   - `http://localhost:3000/*` (for local development)
+   - `https://yourdomain.com/*` (for production)
+
+#### 4. Add to Environment Variables
+
+Add your Mapbox token to your `.env.local` file:
+
+```env
+NEXT_PUBLIC_MAPBOX_TOKEN=pk.your_actual_token_here
+```
+
+**Important**: The token must be prefixed with `NEXT_PUBLIC_` to be available in the browser for map rendering.
+
 ### Required Airtable Setup
 
 #### 1. API Access
+
 - Create an Airtable account at [airtable.com](https://airtable.com)
-- Generate a personal access token from your [Airtable account settings](https://airtable.com/account)
-- Note your Base ID from your Airtable base URL
+- Generate a personal access token from your [Airtable account settings](https://airtable.com/account) with the scopes `data.records:read`
+- Note your Base ID from your Airtable base URL - it will be the first path parameter (i.e. https://airtable.com/[BASE_ID]?)
 
 #### 2. Base Structure
 
 Your Airtable base should contain a table named **"Media Locations"** with the following fields:
 
 ##### Required Fields:
+
 - **Name** (Single line text) - Primary field, name of the location/media
 - **Latitude** (Number) - Geographic latitude coordinate
 - **Longitude** (Number) - Geographic longitude coordinate
 
 ##### Optional Location Fields:
+
 - **Location Name** (Single line text) - Descriptive name of the location
 - **Natural Feature Name** (Single line text) - Name of natural features (rivers, mountains, etc.)
 - **City** (Single line text) - City name
@@ -138,9 +208,10 @@ Your Airtable base should contain a table named **"Media Locations"** with the f
 - **Country** (Single line text) - Country name
 
 ##### Linked Media Fields (from related Media table):
+
 - **Name (from Media)** - Linked record field to Media table
 - **Original Title (from Media)** - Lookup field
-- **Director (from Media)** - Lookup field  
+- **Director (from Media)** - Lookup field
 - **Release Year (from Media)** - Lookup field
 - **Description (from Media)** - Lookup field
 - **Image (from Media)** - Lookup field (Attachment)
@@ -154,6 +225,7 @@ Your Airtable base should contain a table named **"Media Locations"** with the f
 - **Media Type (from Media)** - Lookup field (Single select)
 
 #### 3. Views and Permissions
+
 - Create a view in your "Media Locations" table that includes all records you want to display
 - Ensure your Airtable base is shared with appropriate permissions for your API key
 - Set the view name in your `AIRTABLE_VIEW_NAME` environment variable
@@ -209,13 +281,13 @@ interface Media {
 
 ### Environment Variables
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `NEXT_PUBLIC_MAPBOX_TOKEN` | Yes | Mapbox public access token for map functionality |
-| `AIRTABLE_API_KEY` | Yes | Airtable personal access token |
-| `AIRTABLE_BASE_ID` | Yes | Your Airtable base identifier |
-| `AIRTABLE_VIEW_NAME` | Yes | The view name in your Media Locations table |
-| `ENABLE_ANALYTICS` | No | Set to `true` to enable Vercel Analytics |
+| Variable                   | Required | Description                                      |
+| -------------------------- | -------- | ------------------------------------------------ |
+| `NEXT_PUBLIC_MAPBOX_TOKEN` | Yes      | Mapbox public access token for map functionality |
+| `AIRTABLE_API_KEY`         | Yes      | Airtable personal access token                   |
+| `AIRTABLE_BASE_ID`         | Yes      | Your Airtable base identifier                    |
+| `AIRTABLE_VIEW_NAME`       | Yes      | The view name in your Media Locations table      |
+| `ENABLE_ANALYTICS`         | No       | Set to `true` to enable Vercel Analytics         |
 
 ### Customization
 
@@ -230,38 +302,202 @@ The application is designed to be easily customizable:
 
 ### Vercel (Recommended)
 
-1. Push your code to a GitHub repository
-2. Connect your repository to [Vercel](https://vercel.com)
-3. Configure environment variables in your Vercel dashboard
-4. Deploy automatically on every push to main
+Vercel provides the easiest deployment experience for Next.js applications with automatic builds and deployments.
+
+#### Initial Deployment
+
+1. **Prepare Your Repository**
+
+   ```bash
+   git add .
+   git commit -m "Ready for deployment"
+   git push origin main
+   ```
+
+2. **Connect to Vercel**
+
+   - Sign up at [vercel.com](https://vercel.com) using your GitHub account
+   - Click "New Project" and import your Media Mapper repository
+   - Vercel will automatically detect it's a Next.js project
+
+3. **Configure Environment Variables**
+
+   In your Vercel project dashboard:
+
+   - Go to **Settings** → **Environment Variables**
+   - Add each required variable:
+
+   | Variable                   | Value                   | Environment                      |
+   | -------------------------- | ----------------------- | -------------------------------- |
+   | `NEXT_PUBLIC_MAPBOX_TOKEN` | `pk.your_mapbox_token`  | Production, Preview, Development |
+   | `AIRTABLE_API_KEY`         | `your_airtable_api_key` | Production, Preview, Development |
+   | `AIRTABLE_BASE_ID`         | `your_airtable_base_id` | Production, Preview, Development |
+   | `AIRTABLE_VIEW_NAME`       | `your_view_name`        | Production, Preview, Development |
+   | `ENABLE_ANALYTICS`         | `true`                  | Production                       |
+
+   **Important**: Select all three environments (Production, Preview, Development) for each variable unless specified otherwise.
+
+4. **Deploy**
+   - Click "Deploy" and wait for the build to complete
+   - Your application will be available at `https://your-project-name.vercel.app`
+
+#### Deploying Updates
+
+**Automatic Deployment:**
+
+- Every push to your `main` branch automatically triggers a new deployment
+- Preview deployments are created for pull requests
+
+**Manual Deployment:**
+
+1. Make your changes locally
+2. Test thoroughly with `npm run build` and `npm run lint`
+3. Commit and push:
+   ```bash
+   git add .
+   git commit -m "feat: your update description"
+   git push origin main
+   ```
+4. Vercel automatically builds and deploys within 1-2 minutes
+
+**Environment Variable Updates:**
+
+- Changes to environment variables require a new deployment
+- After updating variables in Vercel dashboard, trigger a redeploy:
+  - Go to **Deployments** tab in Vercel
+  - Click the three dots (⋯) on the latest deployment
+  - Select "Redeploy"
+
+#### Custom Domain Setup
+
+1. **Add Domain in Vercel**
+
+   - Go to **Settings** → **Domains**
+   - Add your custom domain (e.g., `yourdomain.com`)
+
+2. **Update DNS Records**
+
+   - Add a CNAME record pointing to `cname.vercel-dns.com`
+   - Or follow Vercel's specific DNS instructions
+
+3. **Update Mapbox Token Restrictions**
+   - Add your custom domain to your Mapbox token URL restrictions
+   - Include both `https://yourdomain.com/*` and `https://*.yourdomain.com/*`
 
 ### Other Platforms
 
-Media Mapper can be deployed to any platform that supports Next.js:
+Media Mapper can be deployed to any platform that supports Next.js applications:
 
-- **Netlify**: Use the `@netlify/plugin-nextjs` plugin
-- **Railway**: Direct deployment with environment variables
-- **DigitalOcean App Platform**: Node.js app with build command `npm run build`
-- **AWS Amplify**: Connect your GitHub repository
+#### Netlify
+
+1. Connect your GitHub repository to Netlify
+2. Set build command: `npm run build`
+3. Set publish directory: `.next`
+4. Install the Next.js plugin: `@netlify/plugin-nextjs`
+5. Configure environment variables in Netlify dashboard
+
+### Pre-Deployment Checklist
+
+Before deploying to production:
+
+- [ ] Test the build locally: `npm run build`
+- [ ] Run linting: `npm run lint`
+- [ ] Verify all environment variables are set correctly
+- [ ] Test with production data in your Airtable base
+- [ ] Ensure Mapbox token has appropriate URL restrictions
+- [ ] Confirm Airtable base permissions allow API access
+- [ ] Test the application functionality end-to-end
+
+## 🍴 Working with Your Fork
+
+If you forked the repository, here's how to keep it updated and manage your customizations:
+
+### Keeping Your Fork Updated
+
+1. **Fetch upstream changes**
+   ```bash
+   git fetch upstream
+   ```
+
+2. **Switch to your main branch and merge updates**
+   ```bash
+   git checkout main
+   git merge upstream/main
+   ```
+
+3. **Push updates to your fork**
+   ```bash
+   git push origin main
+   ```
+
+### Managing Customizations
+
+**Recommended Workflow:**
+1. Keep your `main` branch clean and up-to-date with upstream
+2. Create separate branches for your customizations:
+   ```bash
+   git checkout -b custom/my-theme
+   git checkout -b custom/my-data-fields
+   ```
+3. Deploy from your custom branches or merge them into a `production` branch
+
+**Example Custom Branch Workflow:**
+```bash
+# Create and work on a custom feature
+git checkout -b custom/branded-theme
+# Make your changes...
+git add .
+git commit -m "feat: add custom branding and theme"
+git push origin custom/branded-theme
+
+# Deploy this branch to production
+# (Configure your deployment platform to use this branch)
+```
+
+### Handling Merge Conflicts
+
+When updating from upstream, you might encounter conflicts:
+
+1. **Resolve conflicts manually** in your editor
+2. **Test thoroughly** after resolving conflicts
+3. **Commit the resolution**:
+   ```bash
+   git add .
+   git commit -m "resolve: merge conflicts with upstream updates"
+   ```
 
 ## 🤝 Contributing
 
 We welcome contributions! This project is open source and designed to be a community resource.
 
 ### Getting Started
-1. Fork the repository
+
+1. Fork the repository (see [Working with Your Fork](#-working-with-your-fork) above)
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
 4. Run tests and linting (`npm run lint`, `npm run type-check`)
 5. Commit your changes (`git commit -m 'Add amazing feature'`)
 6. Push to the branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
+7. Open a Pull Request against the original repository
 
 ### Development Guidelines
+
 - Follow the existing code style and patterns
 - Ensure accessibility standards are maintained
 - Test your changes thoroughly
 - Update documentation as needed
+- Keep commits focused and write clear commit messages
+
+### Types of Contributions
+
+We especially welcome:
+
+- **Bug fixes** - Help make Media Mapper more stable
+- **Accessibility improvements** - Ensure WCAG 2.2 AA compliance
+- **Documentation** - Improve setup guides and API docs
+- **New features** - Enhance the core mapping and data visualization capabilities
+- **Performance optimizations** - Make the app faster and more efficient
+- **Testing** - Add unit tests, integration tests, and accessibility tests
 
 ## 📝 License
 
