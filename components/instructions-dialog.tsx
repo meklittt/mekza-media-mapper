@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import UPennLogo from "@/public/upenn_logo.png";
+import CargcLogo from "@/public/upenn_cargc_logo.png";
 import {
   MousePointer,
   MapPin,
@@ -205,13 +206,23 @@ export default function InstructionsDialog() {
                     . This support enables the development of this open-source
                     framework for spatial media exploration.
                   </p>
-                  <div className="mt-0.5 relative w-[100px] h-20">
-                    <Image
-                      src={UPennLogo}
-                      alt="University of Pennsylvania Logo"
-                      fill
-                      objectFit="contain"
-                    />
+                  <div className="flex flex-row gap-2">
+                    <div className="mt-0.5 relative w-[100px] h-20">
+                      <Image
+                        src={CargcLogo}
+                        alt="University of Pennsylvania Center for Advanced Research in Global Communication"
+                        fill
+                        objectFit="contain"
+                      />
+                    </div>
+                    <div className="mt-0.5 relative w-[100px] h-20">
+                      <Image
+                        src={UPennLogo}
+                        alt="University of Pennsylvania Logo"
+                        fill
+                        objectFit="contain"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

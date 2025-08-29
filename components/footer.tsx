@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Github } from "lucide-react";
 import UPennLogo from "@/public/upenn_logo.png";
+import CargcLogo from "@/public/upenn_cargc_logo.png";
 
 export default function Footer({ owner }: { owner: string }) {
   return (
@@ -22,20 +23,36 @@ export default function Footer({ owner }: { owner: string }) {
               University of Pennsylvania
             </Link>
           </span>
-          <Link
-            href="https://www.upenn.edu/"
-            className="relative shrink-0 w-[110px] h-16"
-            title="University of Pennsylvania"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              src={UPennLogo}
-              alt="University of Pennsylvania official logo - link to Penn's website"
-              fill
-              className="object-contain"
-            />
-          </Link>
+          <div className="flex flex-row gap-2">
+            <Link
+              href="https://www.asc.upenn.edu/research/centers/center-for-advanced-research-in-global-communication"
+              className="relative shrink-0 w-[100px] h-16"
+              title="Center for Advanced Research in Global Communication"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                src={CargcLogo}
+                alt="University of Pennsylvania Center for Advanced Research in Global Communication"
+                fill
+                className="object-contain"
+              />
+            </Link>
+            <Link
+              href="https://www.upenn.edu/"
+              className="relative shrink-0 w-[110px] h-16"
+              title="University of Pennsylvania"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                src={UPennLogo}
+                alt="University of Pennsylvania official logo - link to Penn's website"
+                fill
+                className="object-contain"
+              />
+            </Link>
+          </div>
         </div>
 
         <div className="flex flex-col gap-1 items-center md:items-end">
