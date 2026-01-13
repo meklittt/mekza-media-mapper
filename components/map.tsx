@@ -269,6 +269,19 @@ export function Map({
     }
   }, [selectedMediaPoint, isMapLoaded]);
 
+  /** =============================================== */
+  /** Randomly Select a Media Point */
+  /** =============================================== */
+  useEffect(() => {
+    if (selectedMediaPoint || !isMapLoaded || data.length === 0) {
+      return;
+    }
+
+    const randomIndex = Math.floor(Math.random() * data.length);
+    window.history.pushState({}, "", `?mediaPointId=${data[randomIndex].id}`);
+    // Omitting selectedMediaPoint since it would retrigger a selection when the media panel is closed.
+  }, [isMapLoaded, data]);
+
   return (
     <div className="w-full h-full relative">
       <div
