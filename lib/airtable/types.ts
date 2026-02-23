@@ -33,6 +33,7 @@ export interface Media {
   references?: string;
   rights?: string;
   rights_statement_link?: string;
+  related_media_locations?: string[];
 }
 
 export interface MediaLocation {

@@ -11,6 +11,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { removeQueryParameter } from '@/lib/utils';
+import { Label } from './ui/label';
 
 interface LocationDetailsProps {
   data: MediaLocation[];
@@ -82,6 +83,8 @@ export function LocationDetails({ data }: LocationDetailsProps) {
   }
 
   if (!selectedMediaPoint) return null;
+
+  const relatedMedia = data.filter(d => selectedMediaPoint?.media?.related_media_locations?.includes(d.id) && d.id !== selectedMediaPoint.id);
 
   return (
     <Card
@@ -172,6 +175,23 @@ export function LocationDetails({ data }: LocationDetailsProps) {
           value={selectedMediaPoint?.media?.subjects}
           className="mt-3"
         />
+
+        {relatedMedia.length > 0 &&
+          <>
+            <Label className='text-xs text-muted-foreground mt-3'>Associated Media Locations</Label>
+            <ul className='ml-5 list-disc'>
+              {relatedMedia.map((item, index) => (
+                <li key={`associated-media-${index}`}>
+                  <Link
+                    className="text-sm flex items-center gap-1 text-primary underline underline-offset-2 hover:text-primary/80 transition-colors w-fit"
+                    href={`/?mediaPointId=${item.id}`}>
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </>
+        }
 
         <Metric
           href={selectedMediaPoint?.media?.rights_statement_link || ""}

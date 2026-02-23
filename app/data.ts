@@ -41,6 +41,7 @@ export async function getMediaPoints() {
               rights_statement_link:
                 fields.rights_statement_link_from_media?.[0],
               media_type: fields.media_type_from_media?.[0],
+              related_media_locations: fields.related_media_locations_from_media,
             },
           };
         });
