@@ -8,6 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 import { Row } from "@tanstack/react-table";
 import { MapFilters, MediaLocation } from "@/lib/airtable/types";
 import { formatLocation } from "@/components/media-locations-table/columns";
+import { LngLatBoundsLike } from "mapbox-gl";
 
 const headers = [
   "Media Title",
@@ -74,17 +75,52 @@ export function removeQueryParameter(param: string): string {
   return `?${params.toString()}`;
 }
 
-export function addQueryParameter(param: string, value: string | number): string {
+export function addQueryParameter(
+  param: string,
+  value: string | number
+): string {
   const currentURL = new URL(window.location.href).search;
   const params = new URLSearchParams(currentURL);
   params.set(param, `${value}`);
   return `?${params.toString()}`;
 }
 
-
 export function hasActiveFilters(filters: MapFilters): boolean {
-  return filters.countries.length > 0 || 
-         filters.bodiesOfWater.length > 0 || 
-         filters.startYear !== '' || 
-         filters.endYear !== '';
+  return (
+    filters.countries.length > 0 ||
+    filters.bodiesOfWater.length > 0 ||
+    filters.startYear !== "" ||
+    filters.endYear !== ""
+  );
+}
+
+const SINGLE_POINT_BUFFER_DEGREES = 0.5;
+
+export function computeMapBounds(
+  points: MediaLocation[]
+): LngLatBoundsLike | undefined {
+  const valid = points.filter((p) => p.longitude != null && p.latitude != null);
+
+  if (valid.length === 0) return undefined;
+
+  let west = valid[0].longitude;
+  let east = valid[0].longitude;
+  let south = valid[0].latitude;
+  let north = valid[0].latitude;
+
+  for (const p of valid) {
+    if (p.longitude < west) west = p.longitude;
+    if (p.longitude > east) east = p.longitude;
+    if (p.latitude < south) south = p.latitude;
+    if (p.latitude > north) north = p.latitude;
+  }
+
+  if (west === east && south === north) {
+    west -= SINGLE_POINT_BUFFER_DEGREES;
+    east += SINGLE_POINT_BUFFER_DEGREES;
+    south -= SINGLE_POINT_BUFFER_DEGREES;
+    north += SINGLE_POINT_BUFFER_DEGREES;
+  }
+
+  return [west, south, east, north];
 }

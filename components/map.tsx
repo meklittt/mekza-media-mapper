@@ -13,7 +13,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { addQueryParameter, hasActiveFilters } from '@/lib/utils';
+import { addQueryParameter, hasActiveFilters } from "@/lib/utils";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
 
@@ -54,6 +54,9 @@ export function Map({
       container: mapContainer.current,
       style: "mapbox://styles/mapbox/standard",
       bounds: bounds || DEFAULT_BOUNDS, // bounds has to be larger than 1 item
+      fitBoundsOptions: {
+        padding: 100,
+      },
       zoom: DEFAULT_ZOOM,
       preserveDrawingBuffer: true, // has to be set to true for screenshot to work
     });
@@ -277,12 +280,21 @@ export function Map({
   /** Randomly Select a Media Point */
   /** =============================================== */
   useEffect(() => {
-    if (selectedMediaPoint || !isMapLoaded || data.length === 0 || hasActiveFilters(filters)) {
+    if (
+      selectedMediaPoint ||
+      !isMapLoaded ||
+      data.length === 0 ||
+      hasActiveFilters(filters)
+    ) {
       return;
     }
 
     const randomIndex = Math.floor(Math.random() * data.length);
-    window.history.pushState({}, "", addQueryParameter("mediaPointId", data[randomIndex].id));
+    window.history.pushState(
+      {},
+      "",
+      addQueryParameter("mediaPointId", data[randomIndex].id)
+    );
     // Omitting selectedMediaPoint since it would retrigger a selection when the media panel is closed.
     // Omitting data since data changes anytime the url changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps

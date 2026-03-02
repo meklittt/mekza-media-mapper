@@ -1,7 +1,7 @@
 "use client";
 
 import { MapFilters, MediaLocation } from "@/lib/airtable/types";
-import { LngLatBoundsLike } from "mapbox-gl";
+import { computeMapBounds } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { LocationDetails } from "./location-details";
@@ -62,13 +62,7 @@ export default function MapContainer({ mediaPoints }: MapContainerProps) {
     });
   }, [filters, mediaPoints]);
 
-  // If there is only 1 media point, it doesn't satisfy LngLatBounds for mapbox
-  const mapBounds =
-    filteredMediaPoints.length > 1
-      ? (filteredMediaPoints
-          .filter((f) => f.longitude && f.latitude)
-          .map((f) => [f.longitude, f.latitude]) as LngLatBoundsLike)
-      : undefined;
+  const mapBounds = computeMapBounds(filteredMediaPoints);
 
   const countryOptions = [...new Set(mediaPoints.map((media) => media.country))]
     .filter((country) => country !== undefined)
