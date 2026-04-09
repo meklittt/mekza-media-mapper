@@ -16,7 +16,10 @@ export default function Navbar({ title }: { title: string }) {
   const pathname = usePathname();
 
   return (
-    <header className="w-full max-w-7xl mx-auto bg-background" role="banner">
+    <header
+      className="w-full bg-background border-b border-border"
+      role="banner"
+    >
       <div className="flex flex-col justify-center items-center gap-2 p-2 md:flex-row md:justify-between md:p-4">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2 shrink-0">
@@ -33,7 +36,7 @@ export default function Navbar({ title }: { title: string }) {
                   pathname === "/" ? ACTIVE_CLASSNAMES : INACTIVE_CLASSNAMES
                 )}
               >
-                Map View
+                Map
               </Link>
             </li>
             <li>
@@ -46,7 +49,7 @@ export default function Navbar({ title }: { title: string }) {
                     : INACTIVE_CLASSNAMES
                 )}
               >
-                Table View
+                Table
               </Link>
             </li>
             <li>

@@ -115,8 +115,9 @@ export function MediaTable({ data }: MediaTableProps) {
       <div className="rounded-md border">
         <Table aria-label="Media locations table" role="table">
           <caption className="sr-only">
-            Table showing media locations with details including title, type, director, year, location, and subjects. 
-            Click column headers to sort. Click location links to view details on the map.
+            Table showing media locations with details including title, type,
+            director, year, location, and subjects. Click column headers to
+            sort. Click location links to view details on the map.
           </caption>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -181,7 +182,11 @@ export function MediaTable({ data }: MediaTableProps) {
               table.setPageSize(Number(value));
             }}
           >
-            <SelectTrigger id="desktop-page-size" size="sm" className="w-[70px]">
+            <SelectTrigger
+              id="desktop-page-size"
+              size="sm"
+              className="w-[70px]"
+            >
               <SelectValue aria-label="Select number of rows to display per page" />
             </SelectTrigger>
             <SelectContent>
@@ -237,7 +242,10 @@ export function MediaTable({ data }: MediaTableProps) {
                   }
 
                   return (
-                    <PaginationItem key={pageNumber} className="hidden sm:block">
+                    <PaginationItem
+                      key={pageNumber}
+                      className="hidden sm:block"
+                    >
                       <PaginationLink
                         onClick={() => table.setPageIndex(pageNumber - 1)}
                         isActive={pageNumber === currentPage + 1}

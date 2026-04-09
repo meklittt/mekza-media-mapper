@@ -21,7 +21,7 @@ Media Mapper is designed to be a flexible, open-source web application framework
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 20.9.0+
 - npm, pnpm, or yarn
 - Airtable account with properly structured data
 - Mapbox account for map functionality
@@ -206,6 +206,7 @@ A table named **"Media Locations"** with the following fields:
 ##### Optional Location Fields:
 
 - **Location Name** (Single line text) - Descriptive name of the location
+- **Location Description** (Long text) - Detailed description of the location
 - **Natural Feature Name** (Single line text) - Name of natural features (rivers, mountains, etc.)
 - **City** (Single line text) - City name
 - **Region** (Single line text) - State/Province/Region
@@ -279,6 +280,7 @@ interface MediaLocation {
   longitude: number;
   latitude: number;
   location_name?: string;
+  location_description?: string;
   natural_feature_name?: string;
   city?: string;
   region?: string;

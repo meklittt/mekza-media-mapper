@@ -69,7 +69,7 @@ export default async function RootLayout({
             Skip to main content
           </a>
           <Navbar title={metadata.title} />
-          <main id="main-content" role="main">
+          <main id="main-content" role="main" className='flex-1'>
             {children}
           </main>
           <Footer owner={metadata.owner} />

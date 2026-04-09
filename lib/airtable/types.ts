@@ -26,13 +26,13 @@ export interface Media {
   release_year?: number;
   description?: string;
   image?: MediaImage;
-  video?: string;
   video_link?: string;
   subjects?: string[];
   language?: string[];
   references?: string;
   rights?: string;
   rights_statement_link?: string;
+  related_media_locations?: string[];
 }
 
 export interface MediaLocation {
@@ -41,9 +41,34 @@ export interface MediaLocation {
   longitude: number;
   latitude: number;
   location_name?: string;
+  location_description?: string;
   natural_feature_name?: string;
   city?: string;
   region?: string;
   country?: string;
   media?: Media;
+}
+
+export interface MapFilters { 
+  countries: string[];
+  bodiesOfWater: string[];
+  startYear: string;
+  endYear: string;
+}
+
+export interface MultiSelectOption {
+  value: string;
+  label: string;
+}
+
+export interface WebAppMetadata {
+  title: string;
+  description: string;
+  keywords: string;
+  creator: string;
+  owner: string;
+  getting_started_dialog_title?: string;
+  getting_started_dialog_content?: string;
+  getting_started_dialog_enabled?: boolean;
+  getting_started_dialog_version?: string;
 }
